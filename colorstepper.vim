@@ -9,15 +9,38 @@ function! LoadColors()
         let g:step_colors = split(globpath(&rtp,"colors/*.vim"),"\n")
 endfunction
 
+" return string name of currently applied colorscheme
+" http://stackoverflow.com/a/2419692/2295034
+function! GetCurrentColor()
+        try
+            let l:currentColor = g:colors_name
+        catch /^Vim:E121/
+            let l:currentColor = "default
+        endtry
+        return l:currentColor
+endfunction
+
+" return number index of next color to source
+function! GetNextColor()
+        let l:color_index = 0
+        let l:count = 0
+        let l:currentColor = GetCurrentColor()
+        for i in g:step_colors
+            if match(i, '^.*colors\/' . l:currentColor . '\.vim') == 0
+                let l:color_index = l:count
+                break
+            endif
+            let l:count += 1
+        endfor
+        return l:color_index
+endfunction
+
 function! StepColorBy( count )
         if !exists("g:step_colors")
                 call LoadColors()
         endif
-        if exists("g:color_step")
-                let g:color_step = (g:color_step + a:count) % len(g:step_colors)
-        else
-                let g:color_step = 0
-        endif
+
+        let g:color_step = (GetNextColor() + a:count) % len(g:step_colors)
         silent exe 'so ' . g:step_colors[g:color_step]
         call PrintColorscheme()
 endfunction

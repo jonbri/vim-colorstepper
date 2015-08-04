@@ -14,8 +14,8 @@ endfunction
 function! GetCurrentColor()
         try
             let l:currentColor = g:colors_name
-        catch /^Vim:E121/
-            let l:currentColor = "default
+        catch
+            let l:currentColor = "default"
         endtry
         return l:currentColor
 endfunction

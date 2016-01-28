@@ -26,7 +26,7 @@ function! GetNextColor()
         let l:count = 0
         let l:currentColor = GetCurrentColor()
         for i in g:step_colors
-            if match(i, '^.*colors\/' . l:currentColor . '\.vim') == 0
+            if i =~ 'colors.'.l:currentColor.'\.vim'
                 let l:color_index = l:count
                 break
             endif
